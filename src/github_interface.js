@@ -127,6 +127,27 @@ function BuildHTML(result, file) {
     console.log('Built HTML file: ' + file);
 }
 
+function getRepositoryName() {
+    // First, try to get the repository name from the GITHUB_REPOSITORY environment variable.
+    const githubRepo = process.env['GITHUB_REPOSITORY'];
+    if (githubRepo) {
+        const repoName = githubRepo.split('/').pop();
+        return repoName;
+    }
+
+    // If GITHUB_REPOSITORY is not available, try to get the repository name using git.
+    try {
+        const repoName = execSync('basename -s .git `git config --get remote.origin.url`', {
+            encoding: 'utf8',
+            stdio: 'pipe'
+        }).trim();
+        return repoName;
+    } catch (error) {
+        console.error('Error getting repository name:', error);
+        return null;
+    }
+}
+
 async function BuildPDF(result, file) {
     const repositoryName = await getRepositoryName();
     console.log(repositoryName);
