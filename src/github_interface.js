@@ -129,7 +129,7 @@ function BuildHTML(result, file) {
 
 // BuildPDF outputs the PDF file after building it via a chromium package
 function BuildPDF(result, file) {
-    file = UpdateFileName(hardocredname, 'pdf');
+    file = UpdateFileName("hardocredname", 'pdf');
     result.writePDF(OutputDir + file);
     console.log('Build PDF file: ' + file);
 }
