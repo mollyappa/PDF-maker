@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  markdown-to-pdf:
+    container_name: markdown-to-pdf
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "ghcr.io/baileyjm02/markdown-to-pdf/markdown-to-pdf:${TAG:-latest}"
