@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-
+const { execSync } = require('child_process');
 const fs = require("fs");
 const path = require("path");
 const md2pdf = require('./markdown-to-pdf');
@@ -128,12 +128,19 @@ function BuildHTML(result, file) {
 }
 
 function getRepositoryName() {
-    let repositoryName = process.env['GITHUB_REPOSITORY'];
-    if (!repositoryName) {
-        throw 'Could not retrieve the repository name from the environment variables';
+    try {
+        // Executes the command to get the repository name
+        const repoName = execSync('basename -s .git `git config --get remote.origin.url`', {
+            encoding: 'utf8',
+            stdio: 'pipe'
+        }).trim();
+        return repoName;
+    } catch (error) {
+        console.error('Error getting repository name:', error);
+        return null;
     }
-    return repositoryName;
 }
+
 
 
 
