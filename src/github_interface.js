@@ -130,7 +130,7 @@ function BuildHTML(result, file) {
 function getRepositoryName() {
     let repositoryName = process.env['GITHUB_REPOSITORY'];
     if (!repositoryName) {
-        throw 'Could not retrieve the repository name from the environment variables.';
+        throw 'Could not retrieve the repository name from the environment variables';
     }
     return repositoryName;
 }
