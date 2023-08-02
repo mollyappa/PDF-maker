@@ -152,13 +152,14 @@ function getRepositoryName() {
 
 
 // BuildPDF outputs the PDF file after building it via a chromium package
-function BuildPDF(result, file) {
-    const repositoryName = getRepositoryName();
+async function BuildPDF(result, file) {
+    const repositoryName = await getRepositoryName();
     console.log(repositoryName)
     file = UpdateFileName(repositoryName, 'pdf');
     result.writePDF(OutputDir + file);
     console.log('Build PDF file: ' + file);
 }
+
 
 async function ConvertMarkdown(file) {
     // Get the content of the MD file and convert it
