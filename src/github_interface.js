@@ -127,39 +127,22 @@ function BuildHTML(result, file) {
     console.log('Built HTML file: ' + file);
 }
 
-function getRepositoryName() {
-    // First, try to get the repository name from the GITHUB_REPOSITORY environment variable.
-    const githubRepo = process.env['GITHUB_REPOSITORY'];
-    if (githubRepo) {
-        const repoName = githubRepo.split('/').pop();
-        return repoName;
-    }
-
-    // If GITHUB_REPOSITORY is not available, try to get the repository name using git.
-    try {
-        const repoName = execSync('basename -s .git `git config --get remote.origin.url`', {
-            encoding: 'utf8',
-            stdio: 'pipe'
-        }).trim();
-        return repoName;
-    } catch (error) {
-        console.error('Error getting repository name:', error);
-        return null;
-    }
-}
-
-
-
-
-// BuildPDF outputs the PDF file after building it via a chromium package
 async function BuildPDF(result, file) {
     const repositoryName = await getRepositoryName();
-    console.log(repositoryName)
+    console.log(repositoryName);
     file = UpdateFileName(repositoryName, 'pdf');
-    result.writePDF(OutputDir + file);
-    console.log('Build PDF file: ' + file);
+    await new Promise((resolve, reject) => {
+        result.writePDF(OutputDir + file, (err) => {
+            if (err) {
+                console.error('Error building PDF:', err);
+                reject(err);
+            } else {
+                console.log('Build PDF file: ' + file);
+                resolve();
+            }
+        });
+    });
 }
-
 
 async function ConvertMarkdown(file) {
     // Get the content of the MD file and convert it
