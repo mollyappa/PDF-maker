@@ -128,8 +128,15 @@ function BuildHTML(result, file) {
 }
 
 function getRepositoryName() {
+    // First, try to get the repository name from the GITHUB_REPOSITORY environment variable.
+    const githubRepo = process.env['GITHUB_REPOSITORY'];
+    if (githubRepo) {
+        const repoName = githubRepo.split('/').pop();
+        return repoName;
+    }
+
+    // If GITHUB_REPOSITORY is not available, try to get the repository name using git.
     try {
-        // Executes the command to get the repository name
         const repoName = execSync('basename -s .git `git config --get remote.origin.url`', {
             encoding: 'utf8',
             stdio: 'pipe'
