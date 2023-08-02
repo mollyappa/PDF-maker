@@ -127,9 +127,20 @@ function BuildHTML(result, file) {
     console.log('Built HTML file: ' + file);
 }
 
+function getRepositoryName() {
+    let repositoryName = process.env['GITHUB_REPOSITORY'];
+    if (!repositoryName) {
+        throw 'Could not retrieve the repository name from the environment variables.';
+    }
+    return repositoryName;
+}
+
+
+
 // BuildPDF outputs the PDF file after building it via a chromium package
 function BuildPDF(result, file) {
-    file = UpdateFileName("hardocredname", 'pdf');
+    const repositoryName = getRepositoryName();
+    file = UpdateFileName(repositoryName, 'pdf');
     result.writePDF(OutputDir + file);
     console.log('Build PDF file: ' + file);
 }
