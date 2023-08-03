@@ -137,9 +137,12 @@ function getRepositoryName() {
         return repoName;
     } catch (error) {
         console.error('Error getting repository name:', error);
+        console.error('Command output:', error.output.join(''));
+        console.error('Command error:', error.stderr);
         return null;
     }
 }
+
 
 
 
