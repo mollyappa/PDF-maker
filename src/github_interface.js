@@ -164,7 +164,7 @@ async function ConvertMarkdown(file) {
     console.log('Converting: ' + file);
     let result = await md.convert(
         GetFileBody(file),
-        UpdateFileName(file, null)
+        //UpdateFileName(file, null)
     ).then(function (result) {
         return result;
     }).catch(function (err) {
