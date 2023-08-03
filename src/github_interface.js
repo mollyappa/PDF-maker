@@ -129,8 +129,15 @@ function BuildHTML(result, file) {
 
 function getRepositoryName() {
     try {
-        // Executes the command to get the repository name
-        const repoName = execSync('basename -s .git `git config --get remote.origin.url`', {
+        // Get the repository URL
+        const repoUrl = execSync('git config --get remote.origin.url', {
+            encoding: 'utf8',
+            stdio: 'pipe'
+        }).trim();
+        console.log('Repository URL:', repoUrl);
+
+        // Extract the repository name using basename
+        const repoName = execSync(`basename -s .git ${repoUrl}`, {
             encoding: 'utf8',
             stdio: 'pipe'
         }).trim();
@@ -142,6 +149,7 @@ function getRepositoryName() {
         return null;
     }
 }
+
 
 
 
