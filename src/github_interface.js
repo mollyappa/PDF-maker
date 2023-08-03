@@ -128,26 +128,20 @@ function BuildHTML(result, file) {
 }
 
 function getRepositoryName() {
-    try {
-        // Get the repository URL
-        const repoUrl = execSync('git config --get remote.origin.url', {
-            encoding: 'utf8',
-            stdio: 'pipe'
-        }).trim();
-        console.log('Repository URL:', repoUrl);
-
-        // Extract the repository name using basename
-        const repoName = execSync(`basename -s .git ${repoUrl}`, {
-            encoding: 'utf8',
-            stdio: 'pipe'
-        }).trim();
-        return repoName;
-    } catch (error) {
-        console.error('Error getting repository name:', error);
-        console.error('Command output:', error.output.join(''));
-        console.error('Command error:', error.stderr);
+    const repoUrl = process.env['GITHUB_REPOSITORY'];
+    if (!repoUrl) {
+        console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
         return null;
     }
+
+    const repoParts = repoUrl.split('/');
+    if (repoParts.length !== 2) {
+        console.error('Invalid GITHUB_REPOSITORY format. Expected "owner/repo".');
+        return null;
+    }
+
+    const repositoryName = repoParts[1];
+    return repositoryName;
 }
 
 
