@@ -113,9 +113,9 @@ function GetFileBody(file) {
 // UpdateFileName is a helper function to replace the extension
 function UpdateFileName(fileName, extension) {
     fileName = fileName.split('.');
-    fileName.pop();
+    //fileName.pop();
 
-    if (extension !== null) fileName.push(extension);
+    if (extension !== null && fileName !==null) fileName.push(extension);
 
     return fileName.join('.');
 }
