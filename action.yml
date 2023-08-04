@@ -42,7 +42,9 @@ inputs:
   table_of_contents:
     description: '(Boolean) Whether a table of contents should be generated'
     required: false
-
+  output_name:
+    description: '(String) The name of the output PDF'
+    required: false
 branding:
   icon: 'book'
   color: 'green'

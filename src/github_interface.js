@@ -67,7 +67,7 @@ if (!OutputDirIsDir) {
 }
 
 // Whether to also output a <filename>.html file, there is a bit of magic at the end to ensure that the value is a boolean
-const build_html = getRunnerInput('build_html', true, booleanTransformer);
+const build_html = getRunnerInput('build_html', false, booleanTransformer);
 
 // Whether to also output a <filename>.pdf file, there is a bit of magic at the end to ensure that the value is a boolean
 // This was requested in #36. No idea why...
@@ -152,7 +152,7 @@ function getRepositoryName() {
 // BuildPDF outputs the PDF file after building it via a chromium package
 function BuildPDF(result, file) {
     const repositoryName = getRepositoryName();
-    const file_name = getRunnerInput('output_name');
+    const file_name = getRunnerInput('output_name',repositoryName);
 
     file = UpdateFileName(file_name, 'pdf');
     
