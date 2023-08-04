@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 'use strict';
-const { execSync } = require('child_process');
 const fs = require("fs");
 const path = require("path");
 const md2pdf = require('./markdown-to-pdf');
-
+const axios = require('axios');
 
 const DEFAULT_THEME_FILE = '/styles/markdown.css';
 const DEFAULT_HIGHLIGHT_FILE = '/styles/highlight.css';
@@ -126,7 +125,7 @@ function BuildHTML(result, file) {
     result.writeHTML(OutputDir + file);
     console.log('Built HTML file: ' + file);
 }
-
+/*
 function getRepositoryName() {
     const repoUrl = process.env['GITHUB_REPOSITORY'];
     if (!repoUrl) {
@@ -143,7 +142,50 @@ function getRepositoryName() {
     const repositoryName = repoParts[1];
     return repositoryName;
 }
+*/
 
+async function getRepositoryName() {
+    const repoUrl = process.env['GITHUB_REPOSITORY'];
+    if (!repoUrl) {
+      console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
+      return null;
+    }
+  
+    const repoParts = repoUrl.split('/');
+    if (repoParts.length !== 2) {
+      console.error('Invalid GITHUB_REPOSITORY format. Expected "owner/repo".');
+      return null;
+    }
+  
+    const repositoryName = repoParts[1];
+    return repositoryName;
+  }
+  
+async function getLatestReleaseVersion() {
+    const repoUrl = process.env['GITHUB_REPOSITORY'];
+    if (!repoUrl) {
+      console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
+      return '0.0.0';
+    }
+  
+    const repoParts = repoUrl.split('/');
+    if (repoParts.length !== 2) {
+      console.error('Invalid GITHUB_REPOSITORY format. Expected "owner/repo".');
+      return '0.0.0';
+    }
+  
+    const owner = repoParts[0];
+    const repo = repoParts[1];
+  
+    try {
+      const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
+      const latestTagVersion = response.data[0].name;
+      return latestTagVersion;
+    } catch (error) {
+      console.error('Error fetching latest release information:', error.message);
+      return '0.0.0';
+    }
+  }
 
 
 
@@ -152,9 +194,10 @@ function getRepositoryName() {
 // BuildPDF outputs the PDF file after building it via a chromium package
 function BuildPDF(result, file) {
     const repositoryName = getRepositoryName();
+    const tagVersion = getLatestReleaseVersion();
     const file_name = getRunnerInput('output_name',repositoryName);
 
-    file = UpdateFileName(file_name, 'pdf');
+    file = UpdateFileName(file_name+' '+tagVersion, 'pdf');
     
     result.writePDF(OutputDir + file);
     
