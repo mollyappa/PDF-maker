@@ -192,16 +192,17 @@ async function getLatestReleaseVersion() {
 
 
 // BuildPDF outputs the PDF file after building it via a chromium package
-function BuildPDF(result, file) {
-    const repositoryName = getRepositoryName();
-    const tagVersion = getLatestReleaseVersion();
-    const file_name = getRunnerInput('output_name',repositoryName);
+async function BuildPDF(result, file) {
+    const repositoryName = await getRepositoryName();
+    const tagVersion = await getLatestReleaseVersion();
+    const file_name = getRunnerInput('output_name', repositoryName);
 
-    file = UpdateFileName(file_name+' '+tagVersion, 'pdf');
-    
+    file = UpdateFileName(file_name + ' ' + tagVersion, 'pdf');
+
     result.writePDF(OutputDir + file);
-    
+
 }
+
 
 async function ConvertMarkdown(file) {
     // Get the content of the MD file and convert it
