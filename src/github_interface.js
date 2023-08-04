@@ -152,8 +152,9 @@ function getRepositoryName() {
 // BuildPDF outputs the PDF file after building it via a chromium package
 function BuildPDF(result, file) {
     const repositoryName = getRepositoryName();
-    
-    file = UpdateFileName(repositoryName, 'pdf');
+    const file_name = getRunnerInput('output_name', repositoryName);
+
+    file = UpdateFileName(file_name, 'pdf');
     
     result.writePDF(OutputDir + file);
     
