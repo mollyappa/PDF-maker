@@ -156,7 +156,8 @@ function BuildPDF(result, file) {
 
     file = UpdateFileName(repositoryName, 'pdf');
     
-    result.writePDF(OutputDir + file);
+    //result.writePDF(OutputDir + file);
+    result.writePDF(file);
     
 }
 
