@@ -209,12 +209,9 @@ async function ConvertMarkdown(file) {
     console.log('Converting: ' + file);
     let result = await md.convert(
         GetFileBody(file),
-        //UpdateFileName(file, null)
-    ).then(function (result) {
-        return result;
-    }).catch(function (err) {
+    ).catch(function (err) {
         throw ` Trouble converting markdown files: ${err}`;
-    })
+    });
 
     // If the `build_html` environment variable is true, build the HTML
     if (build_html === true) {
@@ -223,10 +220,13 @@ async function ConvertMarkdown(file) {
 
     // Build the PDF file
     if (build_pdf === true) {
-        BuildPDF(result, file);
+        // Create the PDF file name based on the Markdown file name
+        let pdfFileName = UpdateFileName(file, 'pdf');
+        // Write the PDF file
+        result.writePDF(OutputDir + pdfFileName);
+        console.log('Built PDF file: ' + pdfFileName);
     }
 }
-
 // Assign the style and template files to strings for later manipulation
 const style = (extend_default_theme ? md2pdf.getFileContent(DEFAULT_THEME_FILE) : '')
     + (ThemeFile === null ? '' : md2pdf.getFileContent(ThemeFile))
