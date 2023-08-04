@@ -191,16 +191,31 @@ async function getLatestReleaseVersion() {
 
 
 
-// BuildPDF outputs the PDF file after building it via a chromium package
-async function BuildPDF(result, file) {
+  async function BuildPDF(result, file) {
     const repositoryName = await getRepositoryName();
     const tagVersion = await getLatestReleaseVersion();
     const file_name = getRunnerInput('output_name', repositoryName);
 
-    file = UpdateFileName(file_name + ' ' + tagVersion, 'pdf');
+    // Custom function to generate a unique name for the PDF file based on the repository name and tag version
+    function generatePDFFileName(file_name, tagVersion, existingFiles) {
+        let baseFileName = UpdateFileName(file_name + ' ' + tagVersion, 'pdf');
+        let fileName = baseFileName;
+        let index = 1;
 
-    result.writePDF(OutputDir + file);
+        while (existingFiles.includes(fileName)) {
+            fileName = UpdateFileName(`${baseFileName} (${index})`, 'pdf');
+            index++;
+        }
 
+        return fileName;
+    }
+
+    // Build the final name for the PDF file
+    let pdfFileName = generatePDFFileName(file_name, tagVersion, fs.readdirSync(OutputDir));
+
+    // Write the PDF file
+    result.writePDF(OutputDir + pdfFileName);
+    console.log('Built PDF file: ' + pdfFileName);
 }
 
 
@@ -220,11 +235,8 @@ async function ConvertMarkdown(file) {
 
     // Build the PDF file
     if (build_pdf === true) {
-        // Create the PDF file name based on the Markdown file name
-        let pdfFileName = UpdateFileName(file, 'pdf');
-        // Write the PDF file
-        result.writePDF(OutputDir + pdfFileName);
-        console.log('Built PDF file: ' + pdfFileName);
+        await BuildPDF(result, file);     
+        console.log('Built PDF file: ' + file);
     }
 }
 // Assign the style and template files to strings for later manipulation
