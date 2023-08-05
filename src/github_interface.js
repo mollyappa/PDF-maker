@@ -182,17 +182,9 @@ async function getLatestReleaseVersion() {
 
 
   function UpdateFileName(fileName, extension) {
-    fileName = fileName.split('.');
-    let currentExtension = fileName.pop();
-
-    if (extension !== null && extension !== '' && currentExtension.toLowerCase() !== extension.toLowerCase()) {
-        fileName.push(currentExtension);
-        fileName.push(extension);
-    } else {
-        fileName.push(currentExtension);
-    }
-
-    return fileName.join('.');
+    const baseName = fileName.replace(/\.[^/.]+$/, ''); // Remove the existing extension
+    const updatedFileName = extension ? `${baseName}.${extension}` : baseName;
+    return updatedFileName;
 }
 
 async function BuildPDF(result, file) {
