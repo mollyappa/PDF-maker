@@ -109,20 +109,7 @@ function GetFileBody(file) {
     );
 }
 
-// UpdateFileName is a helper function to replace the extension
-function UpdateFileName(fileName, extension) {
-    const nameParts = fileName.split('.');
-    const fileBaseName = nameParts.slice(0, -1).join('.');
-    const fileExtension = nameParts[nameParts.length - 1];
 
-    if (extension !== null) {
-        fileName = fileExtension.toLowerCase() === extension.toLowerCase()
-            ? fileBaseName
-            : fileBaseName + '.' + extension;
-    }
-
-    return fileName;
-}
 
 // BuildHTML outputs the HTML string to a file
 function BuildHTML(result, file) {
@@ -194,7 +181,15 @@ async function getLatestReleaseVersion() {
 
 
 
+// UpdateFileName is a helper function to replace the extension
+function UpdateFileName(fileName, extension) {
+    fileName = fileName.split('.');
+    //fileName.pop();
 
+    if (extension !== null && fileName !==null) fileName.push(extension);
+
+    return fileName.join('.');
+}
 
 async function BuildPDF(result, file) {
     const repositoryName = await getRepositoryName();
