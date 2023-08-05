@@ -111,12 +111,17 @@ function GetFileBody(file) {
 
 // UpdateFileName is a helper function to replace the extension
 function UpdateFileName(fileName, extension) {
-    fileName = fileName.split('.');
-    //fileName.pop();
+    const nameParts = fileName.split('.');
+    const fileBaseName = nameParts.slice(0, -1).join('.');
+    const fileExtension = nameParts[nameParts.length - 1];
 
-    if (extension !== null && fileName !==null) fileName.push(extension);
+    if (extension !== null) {
+        fileName = fileExtension.toLowerCase() === extension.toLowerCase()
+            ? fileBaseName
+            : fileBaseName + '.' + extension;
+    }
 
-    return fileName.join('.');
+    return fileName;
 }
 
 // BuildHTML outputs the HTML string to a file
@@ -191,7 +196,7 @@ async function getLatestReleaseVersion() {
 
 
 
-  async function BuildPDF(result, file) {
+async function BuildPDF(result, file) {
     const repositoryName = await getRepositoryName();
     const tagVersion = await getLatestReleaseVersion();
     const file_name = getRunnerInput('output_name', repositoryName);
