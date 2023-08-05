@@ -183,20 +183,12 @@ async function getLatestReleaseVersion() {
 
 // UpdateFileName is a helper function to replace the extension
 function UpdateFileName(fileName, extension) {
-    let parts = fileName.split('.');
-    const fileBaseName = parts.slice(0, parts.length - 1).join('.');
-    const existingExtension = parts[parts.length - 1];
+    fileName = fileName.split('.');
+    //fileName.pop();
 
-    if (extension !== null && fileName !== null) {
-        if (existingExtension === extension) {
-            // If the extension already matches, no need to update the file name.
-            return fileName;
-        } else {
-            return fileBaseName + '.' + extension;
-        }
-    } else {
-        return fileName;
-    }
+    if (extension !== null && fileName !==null) fileName.push(extension);
+
+    return fileName.join('.');
 }
 
 async function BuildPDF(result, file) {
@@ -219,7 +211,14 @@ async function BuildPDF(result, file) {
     }
 
     // Build the final name for the PDF file
-    let pdfFileName = generatePDFFileName(file_name, tagVersion, fs.readdirSync(OutputDir));
+    const existingFiles = await new Promise((resolve, reject) => {
+        fs.readdir(OutputDir, (err, files) => {
+            if (err) reject(err);
+            else resolve(files);
+        });
+    });
+
+    let pdfFileName = generatePDFFileName(file_name, tagVersion, existingFiles);
 
     // Write the PDF file
     result.writePDF(OutputDir + pdfFileName);
