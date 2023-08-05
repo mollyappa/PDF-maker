@@ -181,12 +181,16 @@ async function getLatestReleaseVersion() {
 
 
 
-// UpdateFileName is a helper function to replace the extension
-function UpdateFileName(fileName, extension) {
+  function UpdateFileName(fileName, extension) {
     fileName = fileName.split('.');
-    //fileName.pop();
+    let currentExtension = fileName.pop();
 
-    if (extension !== null && fileName !==null) fileName.push(extension);
+    if (extension !== null && extension !== '' && currentExtension.toLowerCase() !== extension.toLowerCase()) {
+        fileName.push(currentExtension);
+        fileName.push(extension);
+    } else {
+        fileName.push(currentExtension);
+    }
 
     return fileName.join('.');
 }
