@@ -269,15 +269,17 @@ let md = new md2pdf({
 });
 md.start();
 
+let existingFiles = [];
+
 if (InputPathIsDir) {
     // Handle case that user supplied path to directory of markdown files
 
     fs.readdir(InputPath, async function (err, files) {
         files = GetMarkdownFiles(files);
         if (files.length === 0) throw 'No markdown files found! Exiting.';
+        existingFiles = files.map(file => path.basename(file));
 
-        console.log('Markdown files found: ' + files.join(', '));
-
+        console.log('Markdown files found: ' + files.join(', '));        
         // Loop through each file converting it
         for (let file of files) {
             await ConvertMarkdown(file).catch(function (err) {
