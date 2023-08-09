@@ -207,7 +207,7 @@ async function BuildPDF(result, file) {
         let index = 1;
 
         while (existingFiles.includes(fileName)) {
-            fileName = `${baseFileName} (${index}).pdf`;
+            fileName = `${baseFileName} (${index})`;
             index++;
         }
         
