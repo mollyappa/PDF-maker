@@ -234,7 +234,7 @@ function BuildHTML(result, file) {
 */
 
 
-function ConvertMarkdown(file) {
+async function ConvertMarkdown(file) {
     // file var is a string of the fileame
     // Get the content of the MD file and convert it
     console.log('Converting: ' + file);
@@ -283,7 +283,7 @@ if (InputPathIsDir) {
 
         // Loop through each file converting it
         for (let file of files) {
-            ConvertMarkdown(file).catch(function (err) {
+            await ConvertMarkdown(file).catch(function (err) {
                 throw ` Trouble converting markdown files: ${err}`;
             })
         }
@@ -304,7 +304,7 @@ if (InputPathIsDir) {
         console.log('Markdown file found: ' + files, files[0]);
 
         // Convert the file
-        ConvertMarkdown(files[0]).catch(function (err) {
+        await ConvertMarkdown(files[0]).catch(function (err) {
             throw ` Trouble converting markdown files: ${err}`;
         })
 
