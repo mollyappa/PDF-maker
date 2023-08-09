@@ -136,7 +136,7 @@ function getRepositoryName() {
 }
 */
 
-async function getRepositoryName() {
+function getRepositoryName() {
     const repoUrl = process.env['GITHUB_REPOSITORY'];
     if (!repoUrl) {
       console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
@@ -153,7 +153,7 @@ async function getRepositoryName() {
     return repositoryName;
   }
   
-async function getLatestReleaseVersion() {
+function getLatestReleaseVersion() {
     const repoUrl = process.env['GITHUB_REPOSITORY'];
     if (!repoUrl) {
       console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
@@ -170,7 +170,7 @@ async function getLatestReleaseVersion() {
     const repo = repoParts[1];
   
     try {
-      const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
+      const response =axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
       const latestTagVersion = response.data[0].name;
       return latestTagVersion;
     } catch (error) {
@@ -195,45 +195,50 @@ async function getLatestReleaseVersion() {
     return fileName.join('.');
 }
 
-async function BuildPDF(result, file) {
-    const repositoryName = await getRepositoryName();
-    const tagVersion = await getLatestReleaseVersion();
-    const file_name = getRunnerInput('output_name', repositoryName);
+function BuildPDF(result, file) {
+    const repositoryName =getRepositoryName();
+    const tagVersion = getLatestReleaseVersion();
+    const aribitrary_name = getRunnerInput('output_name', repositoryName);
 
     // Custom function to generate a unique name for the PDF file based on the repository name and tag version
-    function generatePDFFileName(file_name, tagVersion, existingFiles) {
-        let baseFileName = UpdateFileName(file_name + ' ' + tagVersion, 'pdf');
+    function generatePDFFileName(aribitrary_name, tagVersion, existingFiles) {
+        let baseFileName = UpdateFileName(aribitrary_name + ' ' + tagVersion, 'pdf');
         let fileName = baseFileName;
         let index = 1;
 
         while (existingFiles.includes(fileName)) {
-            fileName = UpdateFileName(`${baseFileName} (${index})`, 'pdf');
+            fileName = `${baseFileName} (${index}).pdf`;
             index++;
         }
+        
 
         return fileName;
     }
 
-    // Build the final name for the PDF file
-    const existingFiles = await new Promise((resolve, reject) => {
-        fs.readdir(OutputDir, (err, files) => {
-            if (err) reject(err);
-            else resolve(files);
-        });
-    });
+    
 
-    let pdfFileName = generatePDFFileName(file_name, tagVersion, existingFiles);
+    let pdfFileName = generatePDFFileName(aribitrary_name, tagVersion, existingFiles);
 
     // Write the PDF file
     result.writePDF(OutputDir + pdfFileName);
     console.log('Built PDF file: ' + pdfFileName);
 }
 
+/*
+// BuildHTML outputs the HTML string to a file
+function BuildHTML(result, file) {
+    file = UpdateFileName(file, 'html');
+    result.writeHTML(OutputDir + file);
+    console.log('Built HTML file: ' + file);
+}
+*/
 
-async function ConvertMarkdown(file) {
+
+function ConvertMarkdown(file) {
+    // file var is a string of the fileame
     // Get the content of the MD file and convert it
     console.log('Converting: ' + file);
-    let result = await md.convert(
+    let result =md.convert(
         GetFileBody(file),
     ).catch(function (err) {
         throw ` Trouble converting markdown files: ${err}`;
@@ -246,7 +251,7 @@ async function ConvertMarkdown(file) {
 
     // Build the PDF file
     if (build_pdf === true) {
-        await BuildPDF(result, file);     
+        BuildPDF(result, file);     
         console.log('Built PDF file: ' + file);
     }
 }
@@ -278,7 +283,7 @@ if (InputPathIsDir) {
 
         // Loop through each file converting it
         for (let file of files) {
-            await ConvertMarkdown(file).catch(function (err) {
+            ConvertMarkdown(file).catch(function (err) {
                 throw ` Trouble converting markdown files: ${err}`;
             })
         }
@@ -299,7 +304,7 @@ if (InputPathIsDir) {
         console.log('Markdown file found: ' + files, files[0]);
 
         // Convert the file
-        await ConvertMarkdown(files[0]).catch(function (err) {
+        ConvertMarkdown(files[0]).catch(function (err) {
             throw ` Trouble converting markdown files: ${err}`;
         })
 
