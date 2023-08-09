@@ -222,7 +222,7 @@ async function BuildPDF(result, file) {
     // Write the PDF file
     result.writePDF(OutputDir + pdfFileName);
     console.log('Built PDF file: ' + pdfFileName);
-    existingFiles.push(fileName);
+    existingFiles.push(pdfFileName);
 }
 
 /*
