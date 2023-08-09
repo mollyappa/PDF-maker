@@ -170,7 +170,7 @@ async function getLatestReleaseVersion() {
     const repo = repoParts[1];
   
     try {
-        const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
+        const response = await axios.get(`https://api.github.com/repos/SSS${owner}/${repo}/tags`);
         const latestTagVersion = response.data[0].name;
         return latestTagVersion;
     } catch (error) {
