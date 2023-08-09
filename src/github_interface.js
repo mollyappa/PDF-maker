@@ -207,17 +207,18 @@ async function BuildPDF(result, file) {
         let index = 1;
 
         while (existingFiles.includes(fileName)) {
-            fileName = `${baseFileName} (${index}).pdf`;
+            fileName = `${baseFileName} (${index})`;
             index++;
         }
         
 
         return fileName;
+    
     }
 
     
 
-    let pdfFileName = generatePDFFileName(arbitrary_name, tagVersion, existingFiles);
+    let pdfFileName = generatePDFFileName(arbitrary_name, tagVersion, existingFiles)+".pdf";
     
     // Write the PDF file
     result.writePDF(OutputDir + pdfFileName);
