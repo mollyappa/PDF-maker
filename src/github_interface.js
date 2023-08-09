@@ -202,12 +202,12 @@ async function BuildPDF(result, file) {
 
     // Custom function to generate a unique name for the PDF file based on the repository name and tag version
     function generatePDFFileName(aribitrary_name, tagVersion, existingFiles) {
-        let baseFileName = UpdateFileName(aribitrary_name + ' ' + tagVersion, 'pdf');
+        let baseFileName = arbitrary_name + ' ' + tagVersion + 'pdf';
         let fileName = baseFileName;
         let index = 1;
 
         while (existingFiles.includes(fileName)) {
-            fileName = `${baseFileName} (${index})`;
+            fileName = `${baseFileName} (${index}).pdf`;
             index++;
         }
         
