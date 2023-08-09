@@ -153,7 +153,7 @@ function getRepositoryName() {
     return repositoryName;
   }
   
-function getLatestReleaseVersion() {
+async function getLatestReleaseVersion() {
     const repoUrl = process.env['GITHUB_REPOSITORY'];
     if (!repoUrl) {
       console.error('GITHUB_REPOSITORY environment variable is not available. Cannot determine repository name.');
@@ -170,14 +170,14 @@ function getLatestReleaseVersion() {
     const repo = repoParts[1];
   
     try {
-      const response =axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
-      const latestTagVersion = response.data[0].name;
-      return latestTagVersion;
+        const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/tags`);
+        const latestTagVersion = response.data[0].name;
+        return latestTagVersion;
     } catch (error) {
-      console.error('Error fetching latest release information:', error.message);
-      return '0.0.0';
+        console.error('Error fetching latest release information:', error.message);
+        return '0.0.0';
     }
-  }
+}
 
 
 
@@ -235,26 +235,23 @@ function BuildHTML(result, file) {
 
 
 async function ConvertMarkdown(file) {
-    // file var is a string of the fileame
-    // Get the content of the MD file and convert it
     console.log('Converting: ' + file);
-    let result =md.convert(
-        GetFileBody(file),
-    ).catch(function (err) {
-        throw ` Trouble converting markdown files: ${err}`;
-    });
+    try {
+        let result = await md.convert(GetFileBody(file));
 
-    // If the `build_html` environment variable is true, build the HTML
-    if (build_html === true) {
-        BuildHTML(result, file);
-    }
+        if (build_html === true) {
+            BuildHTML(result, file);
+        }
 
-    // Build the PDF file
-    if (build_pdf === true) {
-        BuildPDF(result, file);     
-        console.log('Built PDF file: ' + file);
+        if (build_pdf === true) {
+            BuildPDF(result, file);
+            console.log('Built PDF file: ' + file);
+        }
+    } catch (err) {
+        throw `Trouble converting markdown files: ${err}`;
     }
 }
+
 // Assign the style and template files to strings for later manipulation
 const style = (extend_default_theme ? md2pdf.getFileContent(DEFAULT_THEME_FILE) : '')
     + (ThemeFile === null ? '' : md2pdf.getFileContent(ThemeFile))
