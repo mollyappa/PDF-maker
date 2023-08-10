@@ -28,5 +28,5 @@ jobs:
           git commit -m "Generate package-lock.json"
           git push origin main
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}  # Use the name of your secret
+          PAT_TOKEN: ${{secrets.PAT_TOKEN}}  # Use the name of your secret
 
