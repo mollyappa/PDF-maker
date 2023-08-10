@@ -63,22 +63,25 @@ function GetMarkdownIt() {
 
 // encodeImage is a helper function to fetch a URL and return the image as a base64 string
 async function encodeImage(url) {
-    try {
-        const response = await request.get({ url, resolveWithFullResponse: true });
-
-        if (response.statusCode !== 200) {
-            console.log('Image not found, is the image folder route correct? [' + url + ']');
-            return null;
-        }
-
-        const contentType = response.headers['content-type'].replace(' ', '');
-        const data = `data:${contentType};base64,${Buffer.from(response.body).toString('base64')}`;
-
-        return data;
-    } catch (error) {
-        console.log('Error while fetching image:', error.message);
-        return null;
-    }
+	return new Promise((resolve, reject) => {
+		request.get(url, function(error, response, body) {
+			if(error) {
+				console.log(error);
+				
+				return resolve(null);
+			}
+			
+			if(response.statusCode !== 200) {
+				console.log('Image not found, is the image folder route correct? [' + url + ']');
+				
+				return resolve(null);
+			}
+			
+			let data = 'data:' + response.headers['content-type'].replace(' ', '') + ';base64,' + new Buffer.from(body).toString('base64');
+			
+			return resolve(data);
+		});
+	});
 }
 
 const used_headers = {};
@@ -218,32 +221,37 @@ class MarkdownToPDF {
 	// ConvertImageRoutes this function changed all instances of the ImageImport path to localhost,
 	// it then fetches this URL and encodes it to base64 so we can include it in both the HTML and
 	// PDF files without having to lug around an images folder
-async  _convertImageRoutes(html) {
-    if (this._image_import === null) {
-        return html;
-    }
-
-    const imagePath = this._image_import.replace(/[-\[\]{}()*+?.,\\^$|#]/g, '\\$&');
-    const imagePathRegex = new RegExp(imagePath, 'g');
-    const imgTagRegex = /<img[^>]+src="([^">]+)"/g;
-    let encoded = html;
-
-    try {
-        let m;
-        while ((m = imgTagRegex.exec(html))) {
-            const path = m[1].replace(imagePathRegex, 'http://localhost:3000');
-            const image = await encodeImage(path);
-
-            if (image !== null) {
-                encoded = encoded.replace(m[1], image);
-            }
-        }
-    } catch (error) {
-        console.log('Error during image conversion:', error.message);
-    }
-
-    return encoded;
-}
+	async _convertImageRoutes(html) {
+		if(this._image_import === null) {
+			return html;
+		}
+		
+		let imagePath = this._image_import.replace(/[-\[\]{}()*+?.,\\^$|#]/g, '\\$&');
+		let imagePathRegex = new RegExp(imagePath, 'g');
+		let imgTagRegex = /<img[^>]+src="([^">]+)"/g;
+		let encoded = html;
+		
+		let m;
+		while(m = imgTagRegex.exec(html)) {
+			try {
+				let path = m[1].replace(imagePathRegex, 'http://localhost:3000');
+				console.log("imager URL: "+ path)
+				let image = await encodeImage(path).then(function (image) {
+					return image;
+				}).catch(function (err) {
+					throw `Error while converting image: ${err}`;
+				})
+				
+				if(image !== null) {
+					encoded = encoded.replace(m[1], image);
+				}
+			}catch(error) {
+				console.log('ERROR:', error);
+			}
+		}
+		
+		return encoded;
+	}
 	
 	
 	static nullCoalescing = nullCoalescing;
