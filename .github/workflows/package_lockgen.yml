@@ -20,13 +20,12 @@ jobs:
       - name: Generate package-lock.json
         run: npm i --package-lock-only
 
-
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add package-lock.json
+          git add path/to/your/project/package-lock.json
           git commit -m "Generate package-lock.json"
-          git push
+          git push origin HEAD
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
