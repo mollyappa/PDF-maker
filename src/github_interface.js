@@ -202,6 +202,7 @@ async function BuildPDF(result, file) {
     const tagVersion =await getLatestReleaseVersion();
     const arbitrary_name =await getRunnerInput('output_name', repositoryName);
     const keep_original_name = await getRunnerInput('keep_original_name', false, booleanTransformer)
+    console.log("Keep original name value: "+keep_original_name)
     if (keep_original_name===false){
     function generatePDFFileName(baseFileName, existingFiles) {
         let fileName = baseFileName;
