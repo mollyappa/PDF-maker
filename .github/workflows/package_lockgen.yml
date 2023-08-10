@@ -17,8 +17,9 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Generate package-lock.json
+        run: npm i --package-lock-only
+        working-directory: /
 
       - name: Commit changes
         run: |
