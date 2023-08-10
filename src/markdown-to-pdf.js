@@ -218,32 +218,32 @@ class MarkdownToPDF {
 	// ConvertImageRoutes this function changed all instances of the ImageImport path to localhost,
 	// it then fetches this URL and encodes it to base64 so we can include it in both the HTML and
 	// PDF files without having to lug around an images folder
-	async function _convertImageRoutes(html) {
-		if (this._image_import === null) {
-			return html;
-		}
-	
-		const imagePath = this._image_import.replace(/[-\[\]{}()*+?.,\\^$|#]/g, '\\$&');
-		const imagePathRegex = new RegExp(imagePath, 'g');
-		const imgTagRegex = /<img[^>]+src="([^">]+)"/g;
-		let encoded = html;
-	
-		try {
-			let m;
-			while ((m = imgTagRegex.exec(html))) {
-				const path = m[1].replace(imagePathRegex, 'http://localhost:3000');
-				const image = await encodeImage(path);
-	
-				if (image !== null) {
-					encoded = encoded.replace(m[1], image);
-				}
-			}
-		} catch (error) {
-			console.log('Error during image conversion:', error.message);
-		}
-	
-		return encoded;
-	}
+async  _convertImageRoutes(html) {
+    if (this._image_import === null) {
+        return html;
+    }
+
+    const imagePath = this._image_import.replace(/[-\[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    const imagePathRegex = new RegExp(imagePath, 'g');
+    const imgTagRegex = /<img[^>]+src="([^">]+)"/g;
+    let encoded = html;
+
+    try {
+        let m;
+        while ((m = imgTagRegex.exec(html))) {
+            const path = m[1].replace(imagePathRegex, 'http://localhost:3000');
+            const image = await encodeImage(path);
+
+            if (image !== null) {
+                encoded = encoded.replace(m[1], image);
+            }
+        }
+    } catch (error) {
+        console.log('Error during image conversion:', error.message);
+    }
+
+    return encoded;
+}
 	
 	
 	static nullCoalescing = nullCoalescing;
