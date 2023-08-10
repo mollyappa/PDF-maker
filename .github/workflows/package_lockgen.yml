@@ -20,13 +20,9 @@ jobs:
       - name: Generate package-lock.json
         run: npm i --package-lock-only
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add ./package-lock.json
-          git commit -m "Generate package-lock.json"
-          git push origin main
-        env:
-          PAT_TOKEN: ${{secrets.PAT_TOKEN}}  # Use the name of your secret
+      - name: Archive package-lock.json
+        uses: actions/upload-artifact@v2
+        with:
+          name: package-lock
+          path: ./package-lock.json
 
