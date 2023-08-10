@@ -199,7 +199,8 @@ async function BuildPDF(result, file) {
     const repositoryName =await getRepositoryName();
     const tagVersion =await getLatestReleaseVersion();
     const arbitrary_name =await getRunnerInput('output_name', repositoryName);
-
+    const keep_original_name = await getRunnerInput('keep_original_name', false, booleanTransformer)
+    if (keep_original_name===false){
     function generatePDFFileName(baseFileName, existingFiles) {
         let fileName = baseFileName;
         let index = 1;
@@ -215,12 +216,20 @@ async function BuildPDF(result, file) {
     let baseFileName = arbitrary_name + ' ' + tagVersion;
     console.log("Existing files: " +existingFiles) 
     let pdfFileName = generatePDFFileName(baseFileName, existingFiles);
-
-    
-    // Write the PDF file
     result.writePDF(OutputDir + pdfFileName);
     console.log('Built PDF file: ' + pdfFileName);
     existingFiles.push(pdfFileName);
+    }
+    else 
+    {
+        file = UpdateFileName(file, 'pdf');
+        result.writePDF(OutputDir + file);
+        console.log('Built PDF file: ' + file);
+        
+    }
+    
+
+    
 }
 
 /*

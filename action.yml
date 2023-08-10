@@ -45,6 +45,9 @@ inputs:
   output_name:
     description: '(String) The name of the output PDF'
     required: false
+  keep_original_name:
+    description: '(Boolean) Determines whether the original Markdown name should be preserved as the final PDF name'
+    requiered: false
 branding:
   icon: 'book'
   color: 'green'
