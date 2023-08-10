@@ -19,7 +19,7 @@ jobs:
 
       - name: Generate package-lock.json
         run: npm i --package-lock-only
-        working-directory: /
+
 
       - name: Commit changes
         run: |
