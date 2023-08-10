@@ -24,7 +24,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add path/to/your/project/package-lock.json
+          git ./package-lock.json
           git commit -m "Generate package-lock.json"
           git push origin HEAD
         env:
