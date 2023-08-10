@@ -21,7 +21,6 @@
 		"markdown-it-toc-done-right": "^4.2.0",
 		"mustache": "4.0.1",
 		"puppeteer": "13.5.1",
-		"request": "^2.88.2",
 		"axios": "^1.4.0"
 	}
 }
