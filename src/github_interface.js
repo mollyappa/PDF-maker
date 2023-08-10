@@ -181,19 +181,21 @@ async function getLatestReleaseVersion() {
 
 
 
-  function UpdateFileName(fileName, extension) {
-    fileName = fileName.split('.');
-    let currentExtension = fileName.pop();
-
-    if (extension !== null && extension !== '' && currentExtension.toLowerCase() !== extension.toLowerCase()) {
-        fileName.push(currentExtension);
-        fileName.push(extension);
-    } else {
-        fileName.push(currentExtension);
+function UpdateFileName(fileName, extension) {
+    if (typeof fileName !== 'string' || (extension !== null && typeof extension !== 'string')) {
+        throw new Error('Invalid input');
     }
 
-    return fileName.join('.');
+    const parts = fileName.split('.');
+    const currentExtension = parts.pop();
+
+    if (extension !== null && extension !== '' && currentExtension.toLowerCase() !== extension.toLowerCase()) {
+        parts.push(extension);
+    }
+    
+    return parts.join('.');
 }
+
 
 async function BuildPDF(result, file) {
     const repositoryName =await getRepositoryName();
